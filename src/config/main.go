@@ -17,6 +17,7 @@ type Config struct {
 	Thread              int    `yaml:"Thread"`
 	ResolversList       string `yaml:"resolversList"`
 	SubdomainWordList   string `yaml:"subdomainWordList"`
+	MassdnsPath         string `yaml:"massdnsPath"`
 }
 
 const (
