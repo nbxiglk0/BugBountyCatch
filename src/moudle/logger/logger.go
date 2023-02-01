@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"BugBountyCatch/src/config"
 	"fmt"
 	"github.com/projectdiscovery/fileutil"
 	"os"
@@ -21,9 +20,9 @@ func Logging(mes string) {
 		}
 	}
 }
-func InitLogFile() {
+func InitLogFile(homeDir string) {
 	logFileName := time.Now().Format("2006-01-02") + ".log"
-	logFilePath = filepath.Join(config.Homedir, logFileName)
+	logFilePath = filepath.Join(homeDir, logFileName)
 	flag := fileutil.FileExists(logFilePath)
 	if flag == false {
 		_, _ = os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE, 0777)

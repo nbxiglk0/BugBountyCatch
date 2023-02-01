@@ -6,7 +6,6 @@ require (
 	github.com/deckarep/golang-set v1.8.0
 	github.com/fatih/color v1.14.1
 	github.com/projectdiscovery/fileutil v0.0.3
-	github.com/projectdiscovery/goflags v0.1.6
 	github.com/projectdiscovery/gologger v1.1.7
 	github.com/projectdiscovery/httpx v1.2.6
 	github.com/projectdiscovery/naabu/v2 v2.1.1
@@ -75,6 +74,7 @@ require (
 	github.com/projectdiscovery/fastdialer v0.0.19 // indirect
 	github.com/projectdiscovery/fdmax v0.0.4 // indirect
 	github.com/projectdiscovery/goconfig v0.0.0-20210804090219-f893ccd0c69c // indirect
+	github.com/projectdiscovery/goflags v0.1.6 // indirect
 	github.com/projectdiscovery/hmap v0.0.6 // indirect
 	github.com/projectdiscovery/httputil v0.0.0-20210906072657-f3a099cb20bc // indirect
 	github.com/projectdiscovery/ipranger v0.0.3 // indirect

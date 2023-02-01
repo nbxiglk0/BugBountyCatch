@@ -19,8 +19,10 @@ import (
 )
 
 var mes string
+var domain string
 
-func CatchRunning(domain string) {
+func CatchRunning() {
+	domain = config.TargetDomain
 	var nabbuOutPut = filepath.Join(config.Homedir, domain+"_NabbuScan.txt")
 	var httpxOutPut = filepath.Join(config.Homedir, domain+"_HttpxScan.txt")
 	var domainsFile = filepath.Join(config.Homedir, domain+"_domains.txt")

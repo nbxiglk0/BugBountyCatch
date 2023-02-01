@@ -7,5 +7,5 @@ import (
 
 func main() {
 	config.ParseConfig("watsons.com.ph")
-	src.CatchRunning("watsons.com.ph")
+	src.CatchRunning()
 }

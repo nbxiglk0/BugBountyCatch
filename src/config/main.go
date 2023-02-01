@@ -14,6 +14,7 @@ var config = new(Config)
 var defaultResolvers []string
 var Homedir string
 var path, _ = os.Getwd()
+var TargetDomain string
 
 type Config struct {
 	SubfinderConfigFile string `yaml:"subfinderConfigFile"`
@@ -27,17 +28,18 @@ const (
 	configFileName = "catchConfig.yaml"
 )
 
-func CreateHome(domain string) {
-	err := os.Mkdir(filepath.Join(path, domain), 0777)
+func CreateHome() {
+	err := os.Mkdir(filepath.Join(path, TargetDomain), 0777)
 	if err != nil {
 		color.Red("创建域名文件夹失败")
 		os.Exit(-1)
 	}
-	Homedir = filepath.Join(path, domain)
+	Homedir = filepath.Join(path, TargetDomain)
 }
 func ParseConfig(domain string) {
-	CreateHome(domain)
-	logger.InitLogFile()
+	TargetDomain = domain
+	CreateHome()
+	logger.InitLogFile(Homedir)
 	defaultConfigFile := filepath.Join(path, configFileName)
 	_, err := os.Stat(defaultConfigFile)
 	if err != nil {
