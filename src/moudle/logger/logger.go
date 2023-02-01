@@ -1,34 +1,31 @@
 package logger
 
 import (
+	"BugBountyCatch/src/config"
 	"fmt"
+	"github.com/projectdiscovery/fileutil"
 	"os"
 	"path/filepath"
 	"time"
 )
 
+var logFilePath string
+
 func Logging(mes string) {
-	logFilePath := logFile()
-	file, err := os.OpenFile(logFilePath, os.O_APPEND, 0644)
+	file, err := os.OpenFile(logFilePath, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err == nil {
 		mes = time.Now().Format("\r\n2006-01-02 15:04:05") + ": " + mes
 		_, err := file.WriteString(mes)
 		if err != nil {
-			fmt.Print("Log write fails")
+			fmt.Println("Log write fails" + err.Error())
 		}
 	}
 }
-func logFile() string {
+func InitLogFile() {
 	logFileName := time.Now().Format("2006-01-02") + ".log"
-	path, err := os.Getwd()
-	if err != nil {
+	logFilePath = filepath.Join(config.Homedir, logFileName)
+	flag := fileutil.FileExists(logFilePath)
+	if flag == false {
+		_, _ = os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE, 0777)
 	}
-	logFilePath := filepath.Join(path, logFileName)
-	_, err = os.Stat(logFilePath)
-	if err == nil {
-	}
-	if os.IsNotExist(err) {
-		_, err = os.OpenFile(logFilePath, os.O_APPEND|os.O_CREATE, 0644)
-	}
-	return logFilePath
 }

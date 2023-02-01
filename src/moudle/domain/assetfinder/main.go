@@ -86,7 +86,8 @@ func ExecuteAssetfinder(domain string) []string {
 		}
 		printed[n] = true
 		fmt.Println(n)
-		result = append(result, n)
+		splits := strings.Split(n, "\n")
+		result = append(result, splits...)
 	}
 	return result
 }

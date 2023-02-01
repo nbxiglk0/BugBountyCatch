@@ -3,6 +3,7 @@ package config
 import (
 	"BugBountyCatch/src/moudle/logger"
 	"bufio"
+	"github.com/fatih/color"
 	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
@@ -11,6 +12,8 @@ import (
 var Domains []string
 var config = new(Config)
 var defaultResolvers []string
+var Homedir string
+var path, _ = os.Getwd()
 
 type Config struct {
 	SubfinderConfigFile string `yaml:"subfinderConfigFile"`
@@ -24,8 +27,17 @@ const (
 	configFileName = "catchConfig.yaml"
 )
 
-func ParseConfig() {
-	path, _ := os.Getwd()
+func CreateHome(domain string) {
+	err := os.Mkdir(filepath.Join(path, domain), 0777)
+	if err != nil {
+		color.Red("创建域名文件夹失败")
+		os.Exit(-1)
+	}
+	Homedir = filepath.Join(path, domain)
+}
+func ParseConfig(domain string) {
+	CreateHome(domain)
+	logger.InitLogFile()
 	defaultConfigFile := filepath.Join(path, configFileName)
 	_, err := os.Stat(defaultConfigFile)
 	if err != nil {

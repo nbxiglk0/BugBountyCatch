@@ -1,5 +1,5 @@
-subfinderConfigFile: E:\Github\BugBountyCatch\subfinder.yaml
+subfinderConfigFile: /mnt/e/Github/BugBountyCatch/subfinder.yaml
 Thread: 10
-resolversList: E:\GitHub\BugBountyCatch\re.txt
-subdomainWordList: E:\GitHub\BugBountyCatch\sub.txt
-massdnsPath: 
+resolversList: /mnt/d/Github/BugBountyCatch/re.txt
+subdomainWordList: /mnt/d/Github/BugBountyCatch/sub.txt
+massdnsPath: bin/massdns

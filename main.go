@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	config.ParseConfig()
+	config.ParseConfig("watsons.com.ph")
 	src.CatchRunning("watsons.com.ph")
 }
