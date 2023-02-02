@@ -12,17 +12,18 @@ import (
 
 var path, _ = os.Getwd()
 
-func ExecuteShuffledns(domain string, validation bool, subdomains string) []string {
+func Executable(domain string, validation bool, subdomains string) []string {
 	// Parse the command line flags and read config files
+	shufflednsConfig := config.InitConfig.ShufflednsConfig
 	var domains []string
 	options := &runner.Options{}
-	options.ResolversFile = config.GetResolversFilePath()
+	options.ResolversFile = config.InitConfig.ResolversList
 	options.Threads = 10000
 	options.Retries = 5
-	options.StrictWildcard = false
-	options.WildcardThreads = 25
+	options.StrictWildcard = shufflednsConfig.StrictWildcard
+	options.WildcardThreads = shufflednsConfig.WildcardThreads
 	options.WildcardOutputFile = ""
-	options.Silent = true
+	options.Silent = shufflednsConfig.Silent
 	options.Json = false
 	options.Domain = domain
 	options.SubdomainsList = ""
@@ -36,7 +37,7 @@ func ExecuteShuffledns(domain string, validation bool, subdomains string) []stri
 			logger.Logging("创建shuffledns输出文件失败")
 		}
 		options.Output = tmp
-		options.Wordlist = config.GetSubdomainList()
+		options.Wordlist = shufflednsConfig.SubdomainWordList
 	} else {
 		options.SubdomainsList = subdomains
 		tmp := filepath.Join(path, "shufflednsValidationDomain.txt")

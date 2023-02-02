@@ -1,23 +1,24 @@
 package naabu
 
 import (
+	"BugBountyCatch/src/config"
 	"github.com/projectdiscovery/naabu/v2/pkg/result"
 	"github.com/projectdiscovery/naabu/v2/pkg/runner"
 	"log"
 )
 
-func ExecuteNaabu(hostFile string, outPutFile string) {
+func Executable(hostFile string, outPutFile string) {
+	naabuConfig := config.InitConfig.NaabuConfig
 	options := runner.Options{
-		ResumeCfg:  &runner.ResumeCfg{},
-		Retries:    1,
-		Silent:     true,
-		Threads:    20,
-		ExcludeCDN: true,
-		TopPorts:   "1000",
-		Output:     outPutFile,
-		HostsFile:  hostFile,
+		ResumeCfg: &runner.ResumeCfg{},
+		Retries:   1,
+		Silent:    naabuConfig.Silent,
+		Threads:   naabuConfig.Threads,
+		TopPorts:  naabuConfig.TopPorts,
+		Output:    outPutFile,
+		OutputCDN: naabuConfig.OutputCDN,
+		HostsFile: hostFile,
 		OnResult: func(hr *result.HostResult) {
-			log.Println(hr.Host, hr.Ports)
 		},
 	}
 

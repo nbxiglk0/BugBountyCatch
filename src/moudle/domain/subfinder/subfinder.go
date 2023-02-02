@@ -10,18 +10,18 @@ import (
 	"log"
 )
 
-func ExecuteSubfinder(domain string) []byte {
+func Executable(domain string) []byte {
+	subfinderConfig := config.InitConfig.SubfinderConfig
 	runnerInstance, err := runner.NewRunner(&runner.Options{
-		RemoveWildcard:     true,
-		All:                true,
-		Silent:             true,
-		Threads:            config.GetThread(), // Thread controls the number of threads to use for active enumerations
-		Timeout:            30,                 // Timeout is the seconds to wait for sources to respond
-		MaxEnumerationTime: 10,                 // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
+		RemoveWildcard:     subfinderConfig.RemoveWildcard,
+		All:                subfinderConfig.All,
+		Silent:             subfinderConfig.Silent,
+		Threads:            subfinderConfig.Threads, // Thread controls the number of threads to use for active enumerations
+		Timeout:            30,                      // Timeout is the seconds to wait for sources to respond
+		MaxEnumerationTime: 10,                      // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
 		//Config:             config.GetSubfinder(),
 		Resolvers: config.GetResolversList(), // Use the default list of resolvers by marshaling it to the config
 		ResultCallback: func(s *resolve.HostEntry) { // Callback function to execute for available host
-			log.Println(s.Host, s.Source)
 		},
 	})
 	buf := bytes.Buffer{}

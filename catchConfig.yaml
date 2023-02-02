@@ -1,5 +1,30 @@
-subfinderConfigFile: /mnt/e/Github/BugBountyCatch/subfinder.yaml
-Thread: 10
-resolversList: /mnt/e/Github/BugBountyCatch/re.txt
-subdomainWordList: /mnt/e/Github/BugBountyCatch/sub.txt
-massdnsPath: bin/massdns
+resolversList: /mnt/d/Github/BugBountyCatch/re.txt
+proxy : ""
+subfinder:
+  - subfinderConfigFile: /mnt/d/Github/BugBountyCatch/subfinder.yaml
+  - Thread: 10
+  - Silent: true
+  - All: true
+  - RemoveWildcard: true
+shuffledns:
+  - subdomainWordList: /mnt/d/Github/BugBountyCatch/sub.txt
+  - Threads: 10000
+  - StrictWildcard: false
+  - WildcardThreads: 25
+  - Silent : true
+naabu:
+  - Threads: 20
+  - TopPorts: 1000
+  - Silent: true
+  - OutputCDN: false
+httpx:
+  - Methods: GET
+  - StatusCode: true
+  - Location: true
+  - TechDetect: true
+  - ExtractTitle: true
+  - OutputIP: true
+  - OutputCName: true
+  - Threads: 100
+  - FollowHostRedirects: true
+  - Silent: true

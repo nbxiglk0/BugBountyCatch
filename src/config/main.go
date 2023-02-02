@@ -10,18 +10,52 @@ import (
 )
 
 var Domains []string
-var config = new(Config)
+var InitConfig = new(Config)
 var defaultResolvers []string
 var Homedir string
 var path, _ = os.Getwd()
 var TargetDomain string
 
-type Config struct {
+type SubfinderConfig struct {
 	SubfinderConfigFile string `yaml:"subfinderConfigFile"`
-	Thread              int    `yaml:"Thread"`
-	ResolversList       string `yaml:"resolversList"`
-	SubdomainWordList   string `yaml:"subdomainWordList"`
-	MassdnsPath         string `yaml:"massdnsPath"`
+	Threads             int    `yaml:"Threads"`
+	Silent              bool   `yaml:"Silent"`
+	All                 bool   `yaml:"All"`
+	RemoveWildcard      bool   `yaml:"RemoveWildcard"`
+}
+type shufflednsConfig struct {
+	SubdomainWordList string `yaml:"subdomainWordList"`
+	Threads           int64  `yaml:"Threads"`
+	WildcardThreads   int    `yaml:"WildcardThreads"`
+	StrictWildcard    bool   `yaml:"StrictWildcard"`
+	Silent            bool   `yaml:"Silent"`
+}
+
+type naabuConfig struct {
+	Threads   int    `yaml:"Threads"`
+	TopPorts  string `yaml:"TopPorts"`
+	Silent    bool   `yaml:"Silent"`
+	OutputCDN bool   `yaml:"OutputCDN"`
+}
+type httpxConfig struct {
+	Threads             int    `yaml:"Threads"`
+	Methods             string `yaml:"Methods"`
+	Silent              bool   `yaml:"Silent"`
+	StatusCode          bool   `yaml:"StatusCode"`
+	Location            bool   `yaml:"Location"`
+	ExtractTitle        bool   `yaml:"ExtractTitle"`
+	TechDetect          bool   `yaml:"TechDetect"`
+	OutputIP            bool   `yaml:"OutputIP"`
+	OutputCName         bool   `yaml:"OutputCName"`
+	FollowHostRedirects bool   `yaml:"FollowHostRedirects"`
+}
+type Config struct {
+	SubfinderConfig  SubfinderConfig  `yaml:"subfinder"`
+	ShufflednsConfig shufflednsConfig `yaml:"shuffledns"`
+	NaabuConfig      naabuConfig      `yaml:"naabu"`
+	HttpxConfig      httpxConfig      `yaml:"httpx"`
+	ResolversList    string           `yaml:"resolversList"`
+	proxy            string           `yaml:"proxy"`
 }
 
 const (
@@ -31,7 +65,7 @@ const (
 func CreateHome() {
 	err := os.Mkdir(filepath.Join(path, TargetDomain), 0777)
 	if err != nil {
-		color.Red("创建域名文件夹失败")
+		color.Red("创建域名文件夹失败" + err.Error())
 		os.Exit(-1)
 	}
 	Homedir = filepath.Join(path, TargetDomain)
@@ -50,26 +84,13 @@ func ParseConfig(domain string) {
 	if err != nil {
 		logger.Logging("读取配置文件失败")
 	}
-	err = yaml.Unmarshal(data, &config)
+	err = yaml.Unmarshal(data, &InitConfig)
 	if err != nil {
 		logger.Logging("解析配置文件失败" + err.Error())
 	}
 }
-
-func GetSubfinder() string {
-	return config.SubfinderConfigFile
-}
-func GetThread() int {
-	return config.Thread
-}
-func GetSubdomainList() string {
-	return config.SubdomainWordList
-}
-func GetResolversFilePath() string {
-	return config.ResolversList
-}
 func GetResolversList() []string {
-	f, err := os.Open(config.ResolversList)
+	f, err := os.Open(InitConfig.ResolversList)
 	if err != nil {
 		logger.Logging("读取ResolversList失败,使用默认Resolvers")
 		defaultResolvers = []string{

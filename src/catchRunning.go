@@ -7,7 +7,9 @@ import (
 	"BugBountyCatch/src/moudle/domain/subfinder"
 	"BugBountyCatch/src/moudle/logger"
 	"BugBountyCatch/src/moudle/scan/httpx"
+	"BugBountyCatch/src/moudle/scan/katana"
 	"BugBountyCatch/src/moudle/scan/naabu"
+	"bufio"
 	"fmt"
 	mapSet "github.com/deckarep/golang-set"
 	"github.com/fatih/color"
@@ -20,9 +22,11 @@ import (
 
 var mes string
 var domain string
+var crawlUrls []string
 
 func CatchRunning() {
 	domain = config.TargetDomain
+	var katanaOutPut = filepath.Join(config.Homedir, domain+"_katanaScan.txt")
 	var nabbuOutPut = filepath.Join(config.Homedir, domain+"_NabbuScan.txt")
 	var httpxOutPut = filepath.Join(config.Homedir, domain+"_HttpxScan.txt")
 	var domainsFile = filepath.Join(config.Homedir, domain+"_domains.txt")
@@ -33,7 +37,7 @@ func CatchRunning() {
 	//
 	mes = time.Now().Format("2006-01-02 15:04:05") + ":	开始运行 subfinder"
 	color.White(mes)
-	subfinderResult := string(subfinder.ExecuteSubfinder(domain))
+	subfinderResult := string(subfinder.Executable(domain))
 	domains := strings.Split(subfinderResult, "\n")
 	for _, domain := range domains {
 		config.Domains = append(config.Domains, domain)
@@ -46,7 +50,7 @@ func CatchRunning() {
 	//
 	mes = time.Now().Format("2006-01-02 15:04:05") + ":	开始运行 assetfinder"
 	color.White(mes)
-	assetfinderResult := assetfinder.ExecuteAssetfinder(domain)
+	assetfinderResult := assetfinder.Executable(domain)
 	config.Domains = append(config.Domains, assetfinderResult...)
 	mes = fmt.Sprintf("%s%d%s%d", "assetfinder 找到域名数", len(assetfinderResult), "    总域名数: ", len(config.Domains))
 	color.Green(mes)
@@ -56,7 +60,7 @@ func CatchRunning() {
 	//
 	mes = time.Now().Format("2006-01-02 15:04:05") + ":	开始运行 shuffledns"
 	color.White(mes)
-	shufflednsResult := shuffledns.ExecuteShuffledns(domain, false, "")
+	shufflednsResult := shuffledns.Executable(domain, false, "")
 	config.Domains = append(config.Domains, shufflednsResult...)
 	mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(config.Domains))
 	color.GreenString(mes)
@@ -95,7 +99,7 @@ func CatchRunning() {
 			}
 		}
 	}
-	shufflednsValidationResult := shuffledns.ExecuteShuffledns(domain, true, tmpDomainsFile)
+	shufflednsValidationResult := shuffledns.Executable(domain, true, tmpDomainsFile)
 	_ = os.Remove(tmpDomainsFile)
 	//
 	//
@@ -126,10 +130,23 @@ func CatchRunning() {
 	mes = time.Now().Format("2006-01-02 15:04:05") + ": 开始运行Naabu扫描端口,输出到 " + nabbuOutPut
 	color.Green(mes)
 	logger.Logging(mes)
-	naabu.ExecuteNaabu(domainsFile, nabbuOutPut)
+	naabu.Executable(domainsFile, nabbuOutPut)
 	//Httpx扫描
+	//
+	//
 	mes = time.Now().Format("2006-01-02 15:04:05") + ": 开始运行httpx收集web信息,输出到 " + httpxOutPut
 	color.Green(mes)
 	logger.Logging(mes)
-	httpx.Executehttpx(filepath.Join(config.Homedir, domain+"_NabbuScan.txt"), httpxOutPut)
+	httpx.Executable(nabbuOutPut, httpxOutPut)
+	//katana爬虫
+	//
+	//
+	f, err := os.Open(httpxOutPut)
+	r := bufio.NewScanner(f)
+	r.Split(bufio.ScanLines)
+	for r.Scan() {
+		url := strings.Split(r.Text(), "")[0]
+		crawlUrls = append(crawlUrls, url)
+	}
+	katana.Executable(crawlUrls, katanaOutPut)
 }

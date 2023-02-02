@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func ExecuteAssetfinder(domain string) []string {
+func Executable(domain string) []string {
 	var subsOnly = true
 	var domains io.Reader
 	domains = os.Stdin
@@ -85,7 +85,6 @@ func ExecuteAssetfinder(domain string) []string {
 			continue
 		}
 		printed[n] = true
-		fmt.Println(n)
 		splits := strings.Split(n, "\n")
 		result = append(result, splits...)
 	}
