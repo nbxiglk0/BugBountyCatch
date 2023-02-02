@@ -1,13 +1,13 @@
-resolversList: /mnt/d/Github/BugBountyCatch/re.txt
+resolversList: ./re.txt
 proxy : ""
 subfinder:
-  - subfinderConfigFile: /mnt/d/Github/BugBountyCatch/subfinder.yaml
+  - subfinderConfigFile: /mnt/e/Github/BugBountyCatch/subfinder.yaml
   - Thread: 10
   - Silent: true
   - All: true
   - RemoveWildcard: true
 shuffledns:
-  - subdomainWordList: /mnt/d/Github/BugBountyCatch/sub.txt
+  - subdomainWordList: ./sub.txt
   - Threads: 10000
   - StrictWildcard: false
   - WildcardThreads: 25
