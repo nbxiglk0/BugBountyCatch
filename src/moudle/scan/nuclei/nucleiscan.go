@@ -30,7 +30,7 @@ import (
 	"github.com/projectdiscovery/ratelimit"
 )
 
-func Executable() {
+func Executable(domains []string, outPutFile string) {
 	cache := hosterrorscache.New(30, hosterrorscache.DefaultMaxHostsCount)
 	defer cache.Close()
 
@@ -49,6 +49,7 @@ func Executable() {
 
 	defaultOpts.IncludeIds = goflags.StringSlice{"cname-service"}
 	defaultOpts.ExcludeTags = config.ReadIgnoreFile().Tags
+	defaultOpts.Output = outPutFile
 
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
@@ -90,9 +91,10 @@ func Executable() {
 	}
 	store.Load()
 
-	inputArgs := []*contextargs.MetaInput{{Input: "docs.hackerone.com"}}
-
-	input := &inputs.SimpleInputProvider{Inputs: inputArgs}
-	_ = engine.Execute(store.Templates(), input)
-	engine.WorkPool().Wait() // Wait for the scan to finish
+	for _, t := range domains {
+		inputArgs := []*contextargs.MetaInput{{Input: t}}
+		input := &inputs.SimpleInputProvider{Inputs: inputArgs}
+		_ = engine.Execute(store.Templates(), input)
+		engine.WorkPool().Wait() // Wait for the scan to finish
+	}
 }

@@ -13,7 +13,7 @@ require (
 	github.com/projectdiscovery/katana v0.0.3
 	github.com/projectdiscovery/naabu/v2 v2.1.1
 	github.com/projectdiscovery/nuclei/v2 v2.8.8
-	github.com/projectdiscovery/ratelimit v0.0.6
+	github.com/projectdiscovery/ratelimit v0.0.4
 	github.com/projectdiscovery/shuffledns v1.0.8
 	github.com/projectdiscovery/subfinder/v2 v2.5.5
 	gopkg.in/yaml.v3 v3.0.1
@@ -155,7 +155,7 @@ require (
 	github.com/projectdiscovery/stringsutil v0.0.2 // indirect
 	github.com/projectdiscovery/tlsx v1.0.3 // indirect
 	github.com/projectdiscovery/uncover v1.0.2 // indirect
-	github.com/projectdiscovery/utils v0.0.6 // indirect
+	github.com/projectdiscovery/utils v0.0.6-0.20230123093357-4dd69195db7e // indirect
 	github.com/projectdiscovery/wappalyzergo v0.0.79 // indirect
 	github.com/projectdiscovery/yamldoc-go v1.0.3-0.20211126104922-00d2c6bb43b6 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect

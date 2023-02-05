@@ -7,7 +7,10 @@ import (
 	"BugBountyCatch/src/moudle/domain/subfinder"
 	"BugBountyCatch/src/moudle/logger"
 	"BugBountyCatch/src/moudle/scan/httpx"
+	"BugBountyCatch/src/moudle/scan/katana"
 	"BugBountyCatch/src/moudle/scan/naabu"
+	"BugBountyCatch/src/moudle/scan/nuclei"
+	"bufio"
 	"fmt"
 	mapSet "github.com/deckarep/golang-set"
 	"github.com/fatih/color"
@@ -24,10 +27,11 @@ var crawlUrls []string
 
 func CatchRunning() {
 	domain = config.TargetDomain
-	//var katanaOutPut = filepath.Join(config.Homedir, domain+"_katanaScan.txt")
+	var katanaOutPut = filepath.Join(config.Homedir, domain+"_katanaScan.txt")
 	var nabbuOutPut = filepath.Join(config.Homedir, domain+"_NabbuScan.txt")
 	var httpxOutPut = filepath.Join(config.Homedir, domain+"_HttpxScan.txt")
 	var domainsFile = filepath.Join(config.Homedir, domain+"_domains.txt")
+	var nucleiOutPut = filepath.Join(config.Homedir, domain+"_nucleiScan.txt")
 	mes = fmt.Sprintf("%s", getTime()+": 开始收集子域名: "+domain)
 	color.Green(mes)
 	logger.Logging(mes)
@@ -139,15 +143,24 @@ func CatchRunning() {
 	//katana爬虫
 	//
 	//
-	//f, err := os.Open(httpxOutPut)
-	//r := bufio.NewScanner(f)
-	//r.Split(bufio.ScanLines)
-	//for r.Scan() {
-	//	url := strings.Split(r.Text(), "")[0]
-	//	crawlUrls = append(crawlUrls, url)
-	//}
-	//katana.Executable(crawlUrls, katanaOutPut)
-
+	mes = getTime() + ": 开始运行katana爬取页面,输出到 " + katanaOutPut
+	color.Green(mes)
+	logger.Logging(mes)
+	f, err := os.Open(httpxOutPut)
+	r := bufio.NewScanner(f)
+	r.Split(bufio.ScanLines)
+	for r.Scan() {
+		url := strings.Split(r.Text(), "")[0]
+		crawlUrls = append(crawlUrls, url)
+	}
+	katana.Executable(crawlUrls, katanaOutPut)
+	//
+	//
+	//
+	mes = getTime() + ": 开始运行nuclei进行漏洞扫描,输出到 " + nucleiOutPut
+	color.Green(mes)
+	logger.Logging(mes)
+	nuclei.Executable(crawlUrls, nucleiOutPut)
 }
 func getTime() string {
 	return time.Now().Format("2006-01-02 15:04:05")
