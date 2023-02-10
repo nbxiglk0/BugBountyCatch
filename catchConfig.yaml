@@ -1,30 +1,32 @@
 resolversList: ./re.txt
 proxy : ""
 subfinder:
-  - subfinderConfigFile: /mnt/e/Github/BugBountyCatch/subfinder.yaml
-  - Thread: 10
-  - Silent: true
-  - All: true
-  - RemoveWildcard: true
+  subfinderConfigFile: /mnt/e/Github/BugBountyCatch/subfinder.yaml
+  Threads: 10
+  Silent: true
+  All: true
+  RemoveWildcard: true
 shuffledns:
-  - subdomainWordList: ./sub.txt
-  - Threads: 10000
-  - StrictWildcard: false
-  - WildcardThreads: 25
-  - Silent : true
+  subdomainWordList: ./sub.txt
+  Threads: 10000
+  StrictWildcard: false
+  WildcardThreads: 25
+  Silent : true
 naabu:
-  - Threads: 20
-  - TopPorts: 1000
-  - Silent: true
-  - OutputCDN: false
+  Threads: 20
+  TopPorts: 1000
+  Silent: true
+  OutputCDN: false
 httpx:
-  - Methods: GET
-  - StatusCode: true
-  - Location: true
-  - TechDetect: true
-  - ExtractTitle: true
-  - OutputIP: true
-  - OutputCName: true
-  - Threads: 100
-  - FollowHostRedirects: true
-  - Silent: true
+  Methods: GET
+  StatusCode: true
+  Location: true
+  TechDetect: true
+  ExtractTitle: true
+  OutputIP: true
+  OutputCName: true
+  Threads: 100
+  FollowHostRedirects: true
+  Silent: true
+nuclei:
+  Eid: sitemap-detect,gunicorn-detect,wordpress-amp,ftp-anonymous-login,openssl-detect,php-detect,weak-cipher-suites,wordpress-xmlrpc-listmethods,wordpress-xmlrpc-file,wordpress-rdf-user-enum,openssh-detect,readme-md,xss-deprecated-header,wordpress-readme-file,salesforce-aura,oidc-detect,keycloak-openid-Catchconfig,ssl-issuer,mismatched-ssl,detect-ssl-issuer,google-api-key,intercom,firebase-urls,CVE-2020-9490,self-signed-ssl,intercom,pyproject-toml,google-bucket-service,wp-license-file,azure-domain-tenant,dnssec-detection,google-bucket-service,txt-fingerprint,cloudflare-external-image-resize,apple-app-site-association,exposed-gitignore,wordpress-detect,wordpress-login,microsoft-azure-error,google-floc-disabled,openssh-detection,mx-service-detector,security-txt,robots-txt-endpoint,aws-cloudfront-service,robots-txt,aws-bucket-service,s3-detect,cname-service,tomcat-detect,cname-service-detection,xss-deprecated-header-detect,iis-internal-ip-disclosure,mx-fingerprint,microsoft-iis-version,caa-fingerprint,oob-header-based-interaction,detect-dns-over-https,request-based-interaction,openresty-detect,dns-waf-detect,cors-misconfig,options-method,txt-fingerprint,cname-fingerprint,email-extractor,addeventlistener-detect,http-missing-security-headers,deprecated-tls,nginx-status,apache-detect,ssl-dns-names,waf-detect,expired-ssl,HTTP-TRACE,tech-detect,tomcat-exposed-docs,tls-version,default-openresty,nginx-version,old-copyright,default-nginx-page,nameserver-fingerprint

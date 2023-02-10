@@ -1,7 +1,7 @@
 package httpx
 
 import (
-	"BugBountyCatch/src/config"
+	"BugBountyCatch/src/Catchconfig"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/gologger/levels"
 	"github.com/projectdiscovery/httpx/runner"
@@ -11,7 +11,7 @@ import (
 func Executable(urlFile string, outPutFile string) {
 	gologger.DefaultLogger.SetMaxLevel(levels.LevelVerbose) // increase the verbosity (optional)
 	schPorts := []string{"http:80", "https:443"}
-	httpxConfig := config.InitConfig.HttpxConfig
+	httpxConfig := Catchconfig.InitConfig.HttpxConfig
 	options := runner.Options{
 		Methods:             httpxConfig.Methods,
 		InputFile:           urlFile,
@@ -25,7 +25,7 @@ func Executable(urlFile string, outPutFile string) {
 		FollowHostRedirects: httpxConfig.FollowHostRedirects,
 		Silent:              httpxConfig.Silent,
 		CustomPorts:         schPorts,
-		Resolvers:           config.GetResolversList(),
+		Resolvers:           Catchconfig.GetResolversList(),
 		Output:              outPutFile,
 		//InputFile: "./targetDomains.txt", // path to file containing the target domains list
 	}

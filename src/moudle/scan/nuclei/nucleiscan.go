@@ -1,6 +1,7 @@
 package nuclei
 
 import (
+	"BugBountyCatch/src/Catchconfig"
 	"context"
 	"fmt"
 	"log"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/logrusorgru/aurora"
 
-	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/nuclei/v2/pkg/catalog/config"
 	"github.com/projectdiscovery/nuclei/v2/pkg/catalog/disk"
 	"github.com/projectdiscovery/nuclei/v2/pkg/catalog/loader"
@@ -47,10 +47,8 @@ func Executable(domains []string, outPutFile string) {
 	protocolstate.Init(defaultOpts)
 	protocolinit.Init(defaultOpts)
 
-	defaultOpts.IncludeIds = goflags.StringSlice{"cname-service"}
-	defaultOpts.ExcludeTags = config.ReadIgnoreFile().Tags
 	defaultOpts.Output = outPutFile
-
+	defaultOpts.ExcludeIds = Catchconfig.InitConfig.NucleiConfig.ParsedEid
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
 	if err != nil {
@@ -83,7 +81,7 @@ func Executable(domains []string, outPutFile string) {
 
 	configObject, err := config.ReadConfiguration()
 	if err != nil {
-		log.Fatalf("Could not read config: %s\n", err)
+		log.Fatalf("Could not read Catchconfig: %s\n", err)
 	}
 	store, err := loader.New(loader.NewConfig(defaultOpts, configObject, catalog, executerOpts))
 	if err != nil {

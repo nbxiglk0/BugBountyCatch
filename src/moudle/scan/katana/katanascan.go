@@ -16,7 +16,7 @@ func Executable(urls []string, outputFile string) {
 		HeadlessNoSandbox: true,
 		ExtensionFilter:   extensionFilter,
 		Silent:            true,
-		MaxDepth:          1,               // Maximum depth to crawl
+		MaxDepth:          3,               // Maximum depth to crawl
 		FieldScope:        "rdn",           // Crawling Scope Field
 		BodyReadSize:      2 * 1024 * 1024, // Maximum response size to read
 		RateLimit:         150,             // Maximum requests to send per second

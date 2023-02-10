@@ -1,7 +1,7 @@
 package shuffledns
 
 import (
-	"BugBountyCatch/src/config"
+	"BugBountyCatch/src/Catchconfig"
 	"BugBountyCatch/src/moudle/logger"
 	"bufio"
 	"github.com/projectdiscovery/gologger"
@@ -13,12 +13,12 @@ import (
 var path, _ = os.Getwd()
 
 func Executable(domain string, validation bool, subdomains string) []string {
-	// Parse the command line flags and read config files
-	shufflednsConfig := config.InitConfig.ShufflednsConfig
+	// Parse the command line flags and read Catchconfig files
+	shufflednsConfig := Catchconfig.InitConfig.ShufflednsConfig
 	var domains []string
 	options := &runner.Options{}
-	options.ResolversFile = config.InitConfig.ResolversList
-	options.Threads = 10000
+	options.ResolversFile = Catchconfig.InitConfig.ResolversList
+	options.Threads = int(shufflednsConfig.Threads)
 	options.Retries = 5
 	options.StrictWildcard = shufflednsConfig.StrictWildcard
 	options.WildcardThreads = shufflednsConfig.WildcardThreads

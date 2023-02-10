@@ -1,7 +1,7 @@
 package src
 
 import (
-	"BugBountyCatch/src/config"
+	"BugBountyCatch/src/Catchconfig"
 	"BugBountyCatch/src/moudle/domain/assetfinder"
 	"BugBountyCatch/src/moudle/domain/shuffledns"
 	"BugBountyCatch/src/moudle/domain/subfinder"
@@ -26,12 +26,12 @@ var domain string
 var crawlUrls []string
 
 func CatchRunning() {
-	domain = config.TargetDomain
-	var katanaOutPut = filepath.Join(config.Homedir, domain+"_katanaScan.txt")
-	var nabbuOutPut = filepath.Join(config.Homedir, domain+"_NabbuScan.txt")
-	var httpxOutPut = filepath.Join(config.Homedir, domain+"_HttpxScan.txt")
-	var domainsFile = filepath.Join(config.Homedir, domain+"_domains.txt")
-	var nucleiOutPut = filepath.Join(config.Homedir, domain+"_nucleiScan.txt")
+	domain = Catchconfig.TargetDomain
+	var katanaOutPut = filepath.Join(Catchconfig.Homedir, domain+"_katanaScan.txt")
+	var nabbuOutPut = filepath.Join(Catchconfig.Homedir, domain+"_NabbuScan.txt")
+	var httpxOutPut = filepath.Join(Catchconfig.Homedir, domain+"_HttpxScan.txt")
+	var domainsFile = filepath.Join(Catchconfig.Homedir, domain+"_domains.txt")
+	var nucleiOutPut = filepath.Join(Catchconfig.Homedir, domain+"_nucleiScan.txt")
 	mes = fmt.Sprintf("%s", getTime()+": 开始收集子域名: "+domain)
 	color.Green(mes)
 	logger.Logging(mes)
@@ -42,9 +42,9 @@ func CatchRunning() {
 	subfinderResult := string(subfinder.Executable(domain))
 	domains := strings.Split(subfinderResult, "\n")
 	for _, domain := range domains {
-		config.Domains = append(config.Domains, domain)
+		Catchconfig.Domains = append(Catchconfig.Domains, domain)
 	}
-	mes = fmt.Sprintf("%s%d%s%d", "subfinder 找到域名数", len(domains), "    总域名数: ", len(config.Domains))
+	mes = fmt.Sprintf("%s%d%s%d", "subfinder 找到域名数", len(domains), "    总域名数: ", len(Catchconfig.Domains))
 	color.Green(mes)
 	logger.Logging(mes)
 	//assetfinder
@@ -53,8 +53,8 @@ func CatchRunning() {
 	mes = getTime() + ":	开始运行 assetfinder"
 	color.White(mes)
 	assetfinderResult := assetfinder.Executable(domain)
-	config.Domains = append(config.Domains, assetfinderResult...)
-	mes = fmt.Sprintf("%s%d%s%d", "assetfinder 找到域名数", len(assetfinderResult), "    总域名数: ", len(config.Domains))
+	Catchconfig.Domains = append(Catchconfig.Domains, assetfinderResult...)
+	mes = fmt.Sprintf("%s%d%s%d", "assetfinder 找到域名数", len(assetfinderResult), "    总域名数: ", len(Catchconfig.Domains))
 	color.Green(mes)
 	logger.Logging(mes)
 	// shuffledns
@@ -63,8 +63,8 @@ func CatchRunning() {
 	mes = getTime() + ":	开始运行 shuffledns"
 	color.White(mes)
 	shufflednsResult := shuffledns.Executable(domain, false, "")
-	config.Domains = append(config.Domains, shufflednsResult...)
-	mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(config.Domains))
+	Catchconfig.Domains = append(Catchconfig.Domains, shufflednsResult...)
+	mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(Catchconfig.Domains))
 	color.GreenString(mes)
 	logger.Logging(mes)
 	//去重
@@ -73,7 +73,7 @@ func CatchRunning() {
 	mes = getTime() + ":	开始去重"
 	color.White(mes)
 	var a []interface{}
-	for _, t := range config.Domains {
+	for _, t := range Catchconfig.Domains {
 		a = append(a, t)
 	}
 	s := mapSet.NewSetFromSlice(a)
@@ -87,7 +87,7 @@ func CatchRunning() {
 	mes = getTime() + ":	开始清除无效域名"
 	color.White(mes)
 	logger.Logging(mes)
-	tmpDomainsFile := filepath.Join(config.Homedir, "tmpDomains.txt")
+	tmpDomainsFile := filepath.Join(Catchconfig.Homedir, "tmpDomains.txt")
 	file, err := os.OpenFile(tmpDomainsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, os.ModeAppend)
 	for index, subdomain := range domainsSlict {
 		t := fmt.Sprintf("%s", subdomain)
@@ -101,8 +101,14 @@ func CatchRunning() {
 			}
 		}
 	}
+
 	shufflednsValidationResult := shuffledns.Executable(domain, true, tmpDomainsFile)
-	_ = os.Remove(tmpDomainsFile)
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+
+		}
+	}(tmpDomainsFile)
 	//
 	//
 	//写入保存

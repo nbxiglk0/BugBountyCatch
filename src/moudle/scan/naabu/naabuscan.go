@@ -1,14 +1,14 @@
 package naabu
 
 import (
-	"BugBountyCatch/src/config"
+	"BugBountyCatch/src/Catchconfig"
 	"github.com/projectdiscovery/naabu/v2/pkg/result"
 	"github.com/projectdiscovery/naabu/v2/pkg/runner"
 	"log"
 )
 
 func Executable(hostFile string, outPutFile string) {
-	naabuConfig := config.InitConfig.NaabuConfig
+	naabuConfig := Catchconfig.InitConfig.NaabuConfig
 	options := runner.Options{
 		ResumeCfg: &runner.ResumeCfg{},
 		Retries:   1,

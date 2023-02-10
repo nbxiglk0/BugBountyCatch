@@ -1,4 +1,4 @@
-package config
+package Catchconfig
 
 import (
 	"BugBountyCatch/src/moudle/logger"
@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var Domains []string
@@ -16,7 +17,7 @@ var Homedir string
 var path, _ = os.Getwd()
 var TargetDomain string
 
-type SubfinderConfig struct {
+type subfinderConfig struct {
 	SubfinderConfigFile string `yaml:"subfinderConfigFile"`
 	Threads             int    `yaml:"Threads"`
 	Silent              bool   `yaml:"Silent"`
@@ -49,13 +50,18 @@ type httpxConfig struct {
 	OutputCName         bool   `yaml:"OutputCName"`
 	FollowHostRedirects bool   `yaml:"FollowHostRedirects"`
 }
+type nucleiConfig struct {
+	Eid       string `yaml:"Eid"`
+	ParsedEid []string
+}
 type Config struct {
-	SubfinderConfig  SubfinderConfig  `yaml:"subfinder"`
+	SubfinderConfig  subfinderConfig  `yaml:"subfinder"`
 	ShufflednsConfig shufflednsConfig `yaml:"shuffledns"`
 	NaabuConfig      naabuConfig      `yaml:"naabu"`
 	HttpxConfig      httpxConfig      `yaml:"httpx"`
+	NucleiConfig     nucleiConfig     `yaml:"nuclei"`
 	ResolversList    string           `yaml:"resolversList"`
-	proxy            string           `yaml:"proxy"`
+	Proxy            string           `yaml:"proxy"`
 }
 
 const (
@@ -85,6 +91,7 @@ func ParseConfig(domain string) {
 		logger.Logging("读取配置文件失败")
 	}
 	err = yaml.Unmarshal(data, &InitConfig)
+	InitConfig.NucleiConfig.ParsedEid = strings.Split(InitConfig.NucleiConfig.Eid, ",")
 	if err != nil {
 		logger.Logging("解析配置文件失败" + err.Error())
 	}
