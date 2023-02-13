@@ -49,6 +49,7 @@ func Executable(domains []string, outPutFile string) {
 
 	defaultOpts.Output = outPutFile
 	defaultOpts.ExcludeIds = Catchconfig.InitConfig.NucleiConfig.ParsedEid
+	defaultOpts.Silent = true
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
 	if err != nil {

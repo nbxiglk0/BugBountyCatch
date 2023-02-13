@@ -156,7 +156,8 @@ func CatchRunning() {
 	r := bufio.NewScanner(f)
 	r.Split(bufio.ScanLines)
 	for r.Scan() {
-		url := strings.Split(r.Text(), "")[0]
+		url := strings.Split(r.Text(), " ")[0]
+		_ = fmt.Sprintf(url)
 		crawlUrls = append(crawlUrls, url)
 	}
 	katana.Executable(crawlUrls, katanaOutPut)
