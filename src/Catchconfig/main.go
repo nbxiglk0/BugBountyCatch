@@ -53,6 +53,13 @@ type httpxConfig struct {
 type nucleiConfig struct {
 	Eid       string `yaml:"Eid"`
 	ParsedEid []string
+	Threads   int  `yaml:"Threads"`
+	Debug     bool `yaml:"Debug"`
+	Silent    bool `yaml:"Silent"`
+}
+type katanaConfig struct {
+	FilterExt       string `yaml:"FilterExt"`
+	ExtensionFilter []string
 }
 type Config struct {
 	SubfinderConfig  subfinderConfig  `yaml:"subfinder"`
@@ -60,6 +67,7 @@ type Config struct {
 	NaabuConfig      naabuConfig      `yaml:"naabu"`
 	HttpxConfig      httpxConfig      `yaml:"httpx"`
 	NucleiConfig     nucleiConfig     `yaml:"nuclei"`
+	KatanaConfig     katanaConfig     `yaml:"katana"`
 	ResolversList    string           `yaml:"resolversList"`
 	Proxy            string           `yaml:"proxy"`
 }
@@ -92,6 +100,7 @@ func ParseConfig(domain string) {
 	}
 	err = yaml.Unmarshal(data, &InitConfig)
 	InitConfig.NucleiConfig.ParsedEid = strings.Split(InitConfig.NucleiConfig.Eid, ",")
+	InitConfig.KatanaConfig.ExtensionFilter = strings.Split(InitConfig.KatanaConfig.FilterExt, ",")
 	if err != nil {
 		logger.Logging("解析配置文件失败" + err.Error())
 	}

@@ -3,7 +3,6 @@ package nuclei
 import (
 	"BugBountyCatch/src/Catchconfig"
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -37,11 +36,9 @@ func Executable(domains []string, outPutFile string) {
 	mockProgress := &testutils.MockProgressClient{}
 	reportingClient, _ := reporting.New(&reporting.Options{}, "")
 	defer reportingClient.Close()
-
-	outputWriter := testutils.NewMockOutputWriter()
-	outputWriter.WriteCallback = func(event *output.ResultEvent) {
-		fmt.Printf("Got Result: %v\n", event)
-	}
+	//outputWriter.WriteCallback = func(event *output.ResultEvent) {
+	//	fmt.Printf("Got Result: %v\n", event)
+	//}
 
 	defaultOpts := types.DefaultOptions()
 	protocolstate.Init(defaultOpts)
@@ -49,7 +46,10 @@ func Executable(domains []string, outPutFile string) {
 
 	defaultOpts.Output = outPutFile
 	defaultOpts.ExcludeIds = Catchconfig.InitConfig.NucleiConfig.ParsedEid
-	defaultOpts.Silent = true
+	defaultOpts.Silent = Catchconfig.InitConfig.NucleiConfig.Silent
+	defaultOpts.Debug = Catchconfig.InitConfig.NucleiConfig.Debug
+	defaultOpts.TemplateThreads = Catchconfig.InitConfig.NucleiConfig.Threads
+	outputWriter, _ := output.NewStandardWriter(defaultOpts)
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)
 	interactClient, err := interactsh.New(interactOpts)
 	if err != nil {

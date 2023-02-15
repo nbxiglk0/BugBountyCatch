@@ -1,6 +1,7 @@
 package katana
 
 import (
+	"BugBountyCatch/src/Catchconfig"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/katana/pkg/engine/standard"
 	"github.com/projectdiscovery/katana/pkg/output"
@@ -8,7 +9,7 @@ import (
 )
 
 func Executable(urls []string, outputFile string) {
-	extensionFilter := []string{"txt", "png", "jpg", "css", "jpeg"}
+	extensionFilter := Catchconfig.InitConfig.KatanaConfig.ExtensionFilter
 	options := &types.Options{
 		OutputFile:        outputFile,
 		Headless:          true,

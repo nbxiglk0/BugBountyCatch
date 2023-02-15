@@ -33,45 +33,42 @@ func CatchRunning() {
 	var domainsFile = filepath.Join(Catchconfig.Homedir, domain+"_domains.txt")
 	var nucleiOutPut = filepath.Join(Catchconfig.Homedir, domain+"_nucleiScan.txt")
 	mes = fmt.Sprintf("%s", getTime()+": 开始收集子域名: "+domain)
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	//subfinder
 	//
 	mes = getTime() + ":	开始运行 subfinder"
-	color.White(mes)
+	outPut(mes)
 	subfinderResult := string(subfinder.Executable(domain))
 	domains := strings.Split(subfinderResult, "\n")
 	for _, domain := range domains {
 		Catchconfig.Domains = append(Catchconfig.Domains, domain)
 	}
 	mes = fmt.Sprintf("%s%d%s%d", "subfinder 找到域名数", len(domains), "    总域名数: ", len(Catchconfig.Domains))
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	//assetfinder
 	//
 	//
 	mes = getTime() + ":	开始运行 assetfinder"
-	color.White(mes)
+	outPut(mes)
 	assetfinderResult := assetfinder.Executable(domain)
 	Catchconfig.Domains = append(Catchconfig.Domains, assetfinderResult...)
 	mes = fmt.Sprintf("%s%d%s%d", "assetfinder 找到域名数", len(assetfinderResult), "    总域名数: ", len(Catchconfig.Domains))
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	// shuffledns
 	// DNS子域名爆破
 	//
-	mes = getTime() + ":	开始运行 shuffledns"
-	color.White(mes)
-	shufflednsResult := shuffledns.Executable(domain, false, "")
-	Catchconfig.Domains = append(Catchconfig.Domains, shufflednsResult...)
-	mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(Catchconfig.Domains))
-	color.GreenString(mes)
-	logger.Logging(mes)
+	//mes = getTime() + ":	开始运行 shuffledns"
+	//color.White(mes)
+	//shufflednsResult := shuffledns.Executable(domain, false, "")
+	//Catchconfig.Domains = append(Catchconfig.Domains, shufflednsResult...)
+	//mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(Catchconfig.Domains))
+	//color.GreenString(mes)
+	//logger.Logging(mes)
 	//去重
 	//
 	//
 	mes = getTime() + ":	开始去重"
-	color.White(mes)
+	outPut(mes)
 	var a []interface{}
 	for _, t := range Catchconfig.Domains {
 		a = append(a, t)
@@ -79,14 +76,12 @@ func CatchRunning() {
 	s := mapSet.NewSetFromSlice(a)
 	domainsSlict := s.ToSlice()
 	mes = fmt.Sprintf("%s%d", "去重后总域名数:  ", len(domainsSlict))
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	//清洗无效域名
 	//使用shuffledns验证域名
 	//
 	mes = getTime() + ":	开始清除无效域名"
-	color.White(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	tmpDomainsFile := filepath.Join(Catchconfig.Homedir, "tmpDomains.txt")
 	file, err := os.OpenFile(tmpDomainsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, os.ModeAppend)
 	for index, subdomain := range domainsSlict {
@@ -130,28 +125,19 @@ func CatchRunning() {
 		logger.Logging("写入域名结果失败 " + err.Error())
 	}
 	mes = fmt.Sprintf("%s%d", "共找到有效存活域名: ", len(shufflednsValidationResult))
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	//扫描端口
 	//
 	//
 	mes = getTime() + ": 开始运行Naabu扫描端口,输出到 " + nabbuOutPut
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	naabu.Executable(domainsFile, nabbuOutPut)
 	//Httpx扫描
 	//
 	//
 	mes = getTime() + ": 开始运行httpx收集web信息,输出到 " + httpxOutPut
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	httpx.Executable(nabbuOutPut, httpxOutPut)
-	//katana爬虫
-	//
-	//
-	mes = getTime() + ": 开始运行katana爬取页面,输出到 " + katanaOutPut
-	color.Green(mes)
-	logger.Logging(mes)
 	f, err := os.Open(httpxOutPut)
 	r := bufio.NewScanner(f)
 	r.Split(bufio.ScanLines)
@@ -160,15 +146,25 @@ func CatchRunning() {
 		_ = fmt.Sprintf(url)
 		crawlUrls = append(crawlUrls, url)
 	}
-	katana.Executable(crawlUrls, katanaOutPut)
-	//
+	//nuclei扫描
 	//
 	//
 	mes = getTime() + ": 开始运行nuclei进行漏洞扫描,输出到 " + nucleiOutPut
-	color.Green(mes)
-	logger.Logging(mes)
+	outPut(mes)
 	nuclei.Executable(crawlUrls, nucleiOutPut)
+	//katana爬虫
+	//
+	//
+	mes = getTime() + ": 开始运行katana爬取页面,输出到 " + katanaOutPut
+	outPut(mes)
+	katana.Executable(crawlUrls, katanaOutPut)
+	mes = getTime() + ": 任务结束 "
+	outPut(mes)
 }
 func getTime() string {
 	return time.Now().Format("2006-01-02 15:04:05")
+}
+func outPut(mes string) {
+	color.Green(mes)
+	logger.Logging(mes)
 }
