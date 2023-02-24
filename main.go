@@ -17,4 +17,7 @@ func main() {
 	}
 	Catchconfig.ParseConfig(*target)
 	src.CatchRunning()
+	//domain := []string{"myaccount.findmespot.com"}
+	//path := "./gau.txt"
+	//gau.Executable(domain, path)
 }

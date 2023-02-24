@@ -29,7 +29,7 @@ httpx:
   FollowHostRedirects: true
   Silent: true
 katana:
-  FilterExt: txt,png,jpg,css,jpeg
+  FilterExt: txt,png,jpg,css,jpeg,gif,svg,ico,vue,webp
 nuclei:
   Threads: 50
   Debug: false

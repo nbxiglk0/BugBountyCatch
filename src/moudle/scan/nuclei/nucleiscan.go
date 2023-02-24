@@ -36,18 +36,19 @@ func Executable(domains []string, outPutFile string) {
 	mockProgress := &testutils.MockProgressClient{}
 	reportingClient, _ := reporting.New(&reporting.Options{}, "")
 	defer reportingClient.Close()
-	//outputWriter.WriteCallback = func(event *output.ResultEvent) {
-	//	fmt.Printf("Got Result: %v\n", event)
-	//}
 
 	defaultOpts := types.DefaultOptions()
 	protocolstate.Init(defaultOpts)
 	protocolinit.Init(defaultOpts)
 
 	defaultOpts.Output = outPutFile
+	defaultOpts.DebugRequests = false
+	defaultOpts.EnableProgressBar = true
 	defaultOpts.ExcludeIds = Catchconfig.InitConfig.NucleiConfig.ParsedEid
 	defaultOpts.Silent = Catchconfig.InitConfig.NucleiConfig.Silent
 	defaultOpts.Debug = Catchconfig.InitConfig.NucleiConfig.Debug
+	et := []string{"./technologies/", "./ssl", "./miscellaneous"}
+	defaultOpts.ExcludedTemplates = et
 	defaultOpts.TemplateThreads = Catchconfig.InitConfig.NucleiConfig.Threads
 	outputWriter, _ := output.NewStandardWriter(defaultOpts)
 	interactOpts := interactsh.NewDefaultOptions(outputWriter, reportingClient, mockProgress)

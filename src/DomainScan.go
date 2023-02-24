@@ -5,9 +5,10 @@ import (
 	"BugBountyCatch/src/moudle/domain/assetfinder"
 	"BugBountyCatch/src/moudle/domain/shuffledns"
 	"BugBountyCatch/src/moudle/domain/subfinder"
+	"BugBountyCatch/src/moudle/grab/gau"
+	"BugBountyCatch/src/moudle/grab/katana"
 	"BugBountyCatch/src/moudle/logger"
 	"BugBountyCatch/src/moudle/scan/httpx"
-	"BugBountyCatch/src/moudle/scan/katana"
 	"BugBountyCatch/src/moudle/scan/naabu"
 	"BugBountyCatch/src/moudle/scan/nuclei"
 	"bufio"
@@ -32,6 +33,7 @@ func CatchRunning() {
 	var httpxOutPut = filepath.Join(Catchconfig.Homedir, domain+"_HttpxScan.txt")
 	var domainsFile = filepath.Join(Catchconfig.Homedir, domain+"_domains.txt")
 	var nucleiOutPut = filepath.Join(Catchconfig.Homedir, domain+"_nucleiScan.txt")
+	var gauOutPut = filepath.Join(Catchconfig.Homedir, domain+"_gauGrab.txt")
 	mes = fmt.Sprintf("%s", getTime()+": 开始收集子域名: "+domain)
 	outPut(mes)
 	//subfinder
@@ -57,13 +59,13 @@ func CatchRunning() {
 	// shuffledns
 	// DNS子域名爆破
 	//
-	//mes = getTime() + ":	开始运行 shuffledns"
-	//color.White(mes)
-	//shufflednsResult := shuffledns.Executable(domain, false, "")
-	//Catchconfig.Domains = append(Catchconfig.Domains, shufflednsResult...)
-	//mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(Catchconfig.Domains))
-	//color.GreenString(mes)
-	//logger.Logging(mes)
+	mes = getTime() + ":	开始运行 shuffledns"
+	color.White(mes)
+	shufflednsResult := shuffledns.Executable(domain, false, "")
+	Catchconfig.Domains = append(Catchconfig.Domains, shufflednsResult...)
+	mes = fmt.Sprintf("%s%d%s%d", "shuffledns 找到域名数", len(shufflednsResult), "    总域名数: ", len(Catchconfig.Domains))
+	color.GreenString(mes)
+	logger.Logging(mes)
 	//去重
 	//
 	//
@@ -158,6 +160,12 @@ func CatchRunning() {
 	mes = getTime() + ": 开始运行katana爬取页面,输出到 " + katanaOutPut
 	outPut(mes)
 	katana.Executable(crawlUrls, katanaOutPut)
+	//gau收集URL
+	//
+	//
+	mes = getTime() + ": 开始运行gau收集URL,输出到 " + gauOutPut
+	outPut(mes)
+	gau.Executable(shufflednsValidationResult, gauOutPut)
 	mes = getTime() + ": 任务结束 "
 	outPut(mes)
 }
